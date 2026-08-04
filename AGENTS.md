@@ -29,6 +29,17 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - Follow the Contract2Close planning docs in `docs/planning/`.
 - Follow the C2C-specific AI guidelines in `.ai/guidelines/c2c.md`.
 - Treat tenant isolation, append-only audit logs, single-upload documents, first-party e-signature, robust Pest coverage, and polished Flux UI as core architectural requirements.
+- Track project execution in Solo todos and scratchpads, not file-based kanban docs. Keep Solo todos and the `C2C v3 Ordered Roadmap Index` scratchpad current as roadmap tasks move.
+
+## GitHub Workflow For Major Tasks
+
+- After completing a major roadmap task, such as `P1-02`, update Solo first: complete the relevant todo, add a concise implementation/verification comment, and move the item into the `Completed` section of the `C2C v3 Ordered Roadmap Index` scratchpad.
+- Commit the completed work with a meaningful commit message that includes the phase/task ID, for example `P1-02 Define tenancy primitives`.
+- Push the branch and open a GitHub pull request for the task. PRs should be opened ready for review, not as drafts, unless the user explicitly requests draft status.
+- The PR title must include the phase/task ID.
+- The PR body must include a clear summary of the code changes, tests/verification run, and code-relevant follow-up tasks or known limitations.
+- Keep PR descriptions scoped to the code in the PR. Do not include dev-process notes, Solo tracking updates, unrelated local changes, or internal agent handoff details unless they directly affect the code review.
+- Do not bundle unrelated user changes into the commit or PR. If unrelated changes are present in the working tree, leave them alone unless the user explicitly asks to include them.
 
 ## Skills Activation
 
