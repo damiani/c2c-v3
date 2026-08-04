@@ -5,6 +5,7 @@ namespace Tests\Feature\Settings;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -23,9 +24,6 @@ class SecurityTest extends TestCase
             'confirm' => true,
             'confirmPassword' => true,
         ]);
-        Features::passkeys([
-            'confirmPassword' => true,
-        ]);
     }
 
     public function test_security_settings_page_can_be_rendered(): void
@@ -38,10 +36,17 @@ class SecurityTest extends TestCase
 
         $response->assertOk();
 
-        $response->assertSee('Passkeys');
-        $response->assertSee('No passkeys yet');
         $response->assertSee('Two-factor authentication');
         $response->assertSee('Enable 2FA');
+        $response->assertDontSee('Passkeys');
+        $response->assertDontSee('No passkeys yet');
+        $response->assertDontSee('Manage your passkeys for passwordless sign-in');
+        $response->assertDontSee('Add a passkey to sign in without a password');
+    }
+
+    public function test_passkey_discovery_route_is_not_registered(): void
+    {
+        $this->assertFalse(Route::has('well-known.passkeys'));
     }
 
     public function test_security_settings_page_requires_password_confirmation_when_enabled(): void
