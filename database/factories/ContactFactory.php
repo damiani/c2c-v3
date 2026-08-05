@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Contact;
 use App\Models\Tenant;
+use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -34,5 +35,16 @@ class ContactFactory extends Factory
             'phone' => fake()->phoneNumber(),
             'metadata' => [],
         ];
+    }
+
+    /**
+     * Attach the contact to an existing transaction.
+     */
+    public function forTransaction(Transaction $transaction): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'tenant_id' => $transaction->tenant_id,
+            'transaction_id' => $transaction->getKey(),
+        ]);
     }
 }

@@ -33,4 +33,26 @@ class DocumentReviewFactory extends Factory
             'reviewed_at' => null,
         ];
     }
+
+    /**
+     * Attach the review to an existing document.
+     */
+    public function forDocument(Document $document): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'tenant_id' => $document->tenant_id,
+            'document_id' => $document->getKey(),
+        ]);
+    }
+
+    /**
+     * Assign the review to an existing user.
+     */
+    public function reviewedBy(User $user, string $role = TenantMembership::ROLE_MEMBER): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'reviewer_user_id' => $user->getKey(),
+            'reviewer_role' => $role,
+        ]);
+    }
 }

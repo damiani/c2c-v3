@@ -33,4 +33,15 @@ class LeaseNotificationFactory extends Factory
             'metadata' => [],
         ];
     }
+
+    /**
+     * Attach the notification to an existing lease.
+     */
+    public function forLease(Lease $lease): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'tenant_id' => $lease->tenant_id,
+            'lease_id' => $lease->getKey(),
+        ]);
+    }
 }

@@ -34,4 +34,16 @@ class PropertyDistributionFactory extends Factory
             'metadata' => [],
         ];
     }
+
+    /**
+     * Attach the distribution to an existing listing.
+     */
+    public function forListing(Listing $listing): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'tenant_id' => $listing->tenant_id,
+            'transaction_id' => $listing->transaction_id,
+            'listing_id' => $listing->getKey(),
+        ]);
+    }
 }

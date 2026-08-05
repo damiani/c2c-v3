@@ -41,4 +41,54 @@ class TransactionFactory extends Factory
             'closed_at' => null,
         ];
     }
+
+    /**
+     * Scope the transaction to an existing tenant.
+     */
+    public function forTenant(Tenant $tenant): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'tenant_id' => $tenant->getKey(),
+        ]);
+    }
+
+    /**
+     * Assign an owner user to the transaction.
+     */
+    public function ownedBy(User $user): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'owner_user_id' => $user->getKey(),
+        ]);
+    }
+
+    /**
+     * Indicate that the transaction is active.
+     */
+    public function active(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => Transaction::STATUS_ACTIVE,
+        ]);
+    }
+
+    /**
+     * Indicate that the transaction is a residential sale.
+     */
+    public function residentialSale(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'transaction_type' => Transaction::TYPE_RESIDENTIAL_SALE,
+        ]);
+    }
+
+    /**
+     * Indicate that the transaction is a commercial lease.
+     */
+    public function commercialLease(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'transaction_type' => Transaction::TYPE_COMMERCIAL_LEASE,
+        ]);
+    }
 }
