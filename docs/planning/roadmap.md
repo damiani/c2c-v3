@@ -11,9 +11,9 @@ Relative effort uses story points: `1` tiny, `3` small, `5` medium, `8` large, `
 ## Product Principles
 
 - Upload once: every party reviews the same uploaded document from their own role-scoped view.
-- One platform: transactions, documents, signatures, AI field entry, contacts, commissions, rentals, listings, and integrations live together.
+- One platform: transactions, dynamic fields, documents, signatures, AI field entry, contacts, commissions, rentals, listings, and integrations live together.
 - Simple enough for anyone: a new user should find any primary feature within 30 seconds without training.
-- White-label from day one: tenant branding, settings, communications, templates, and integration visibility are never hardcoded.
+- White-label from day one: tenant branding, settings, communications, templates, field labels/units/formats, and integration visibility are never hardcoded.
 - Audit everything: auth, tenancy, field edits, document actions, AI extraction, signing, review, compliance, commission, notification, and integration events are append-only.
 
 ## UX Direction
@@ -39,9 +39,9 @@ Relative effort uses story points: `1` tiny, `3` small, `5` medium, `8` large, `
 | 5A | P1 Critical | First beta stabilization for P1 Critical workflows, coverage review, UX pass, regression suite | 13 |
 | 6 | P1 | Core transaction engine: transaction types, lifecycles, property/lease fields, activity feed, filters | 34 |
 | 7 | P1 | Single-upload document platform, reviewer layers, status panel, folder rollups, commission gate hooks | 34 |
-| 8 | P1 | Templates, custom fields, tenant field labels, workflow rules, checklist/versioning permissions | 34 |
+| 8 | P1 | Dynamic field platform: templates, custom fields, scoped labels/units/formats, dependencies, calculations, date triggers, checklist/versioning permissions | 34 |
 | 9 | P1 | Unified forms library, PDF filling, source badges, contextual tabs, frequency ranking, sign flow integration | 21 |
-| 10 | P1 | Teams, contact CRM, per-transaction permissions, section access, team nudges | 21 |
+| 10 | P1 | Teams/brokerages within tenants, contact CRM, per-transaction permissions, section access, team reporting, team nudges | 21 |
 | 10A | P1 | Core platform stabilization, coverage review, beta expansion | 13 |
 | 11 | P2 | Rental/lease management, renewal scheduler, escalation alerts, rental portfolio dashboard | 21 |
 | 12 | P2 | Compliance rules, back-office checklist, rejection/resolution flow, approval gates | 34 |

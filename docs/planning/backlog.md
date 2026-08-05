@@ -10,7 +10,7 @@
 
 ## Phase 1 - Foundation (21)
 
-- Define single-database tenant strategy with required `tenant_id` scoping (5).
+- Define single-database tenant strategy, tenant vs. team boundaries, and direct `tenant_id` scoping rules for tenant-owned aggregate roots and independently accessed records (5).
 - Create core model architecture for tenants, users, roles, transactions, documents, contacts, milestones, audit logs, forms, listings, leases, document reviews, document extractions, lease notifications, and property distributions (8).
 - Establish append-only audit event model and conventions (3).
 - Configure queues, cache, object storage, and document persistence assumptions for Laravel Cloud (3).
@@ -57,7 +57,7 @@
 
 - Implement transaction CRUD for residential sale, purchase, rental, commercial sale, commercial lease, and custom (8).
 - Implement lifecycle states and transitions by transaction type (5).
-- Implement property and lease core fields, including renewal lead time and automatic alert date calculation (8).
+- Implement property and lease core field presentation through the dynamic field platform, including renewal lead time and automatic alert date calculation (8).
 - Implement transaction workspace tabs, activity feed, search, filters, and audit hooks (8).
 - Add lifecycle, validation, policy, and audit tests (5).
 
@@ -72,10 +72,10 @@
 
 ## Phase 8 - Templates, Fields, Rules (34)
 
-- Build template builder for all transaction types (8).
-- Build tenant-scoped field label editor and custom field types (8).
-- Build milestones, checklists, timing offsets, duplication, versioning, and permissions (13).
-- Add field isolation, template versioning, and workflow rule tests (5).
+- Build versioned template builder for residential sale, purchase, rental, commercial sale, commercial lease, and custom transaction types (8).
+- Build dynamic field definitions and scoped overrides for labels, units, formats, visibility, required state, select options, and custom field types at tenant, team, and user-display levels (8).
+- Build conditional display rules, constrained calculation expressions, date-trigger offsets, milestones, checklists, duplication, versioning, and permissions (13).
+- Add tenant/team isolation, override precedence, template versioning, typed value, calculation, date-trigger, and workflow rule tests (5).
 
 ## Phase 9 - Forms Library (21)
 
@@ -86,7 +86,7 @@
 
 ## Phase 10 - Teams And Contacts (21)
 
-- Build team/brokerage shared accounts, role assignment, and per-transaction overrides (5).
+- Build team/brokerage shared accounts within a single tenant, role assignment, reporting visibility, and per-transaction overrides (5).
 - Build CRM-capable contact records and dropdown autofill for repeat contacts (5).
 - Build section-based access, update notifications, contact document associations, and team nudges (8).
 - Add contact, permission, and notification tests (3).
