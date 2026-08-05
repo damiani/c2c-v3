@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Actions\Documents\BuildDocumentStoragePath;
 use App\Models\Document;
 use App\Models\Transaction;
 use App\Models\User;
@@ -30,8 +31,8 @@ class DocumentFactory extends Factory
             'title' => fake()->sentence(3),
             'document_type' => fake()->randomElement(['purchase_agreement', 'lease_agreement', 'disclosure']),
             'status' => Document::STATUS_UPLOADED,
-            'storage_disk' => 's3',
-            'storage_path' => 'documents/'.fake()->uuid().'/'.$filename,
+            'storage_disk' => config('documents.storage.disk', 'documents'),
+            'storage_path' => app(BuildDocumentStoragePath::class)->handle($transaction->tenant_id, $filename),
             'original_filename' => $filename,
             'mime_type' => 'application/pdf',
             'file_size' => fake()->numberBetween(10_000, 5_000_000),

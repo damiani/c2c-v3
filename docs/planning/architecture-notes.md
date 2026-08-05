@@ -39,6 +39,8 @@
 
 - Store binary documents outside the application database.
 - Application database stores metadata, ownership, versioning, review state, folder assignment, extraction state, signing state, and audit references.
+- Application code reads the configured document storage disk from `documents.storage.disk`. Local development defaults to the private local `documents` disk; deployed environments should set `DOCUMENT_STORAGE_DISK=s3` or another S3-compatible disk.
+- Document object paths must be tenant-scoped and live under the configured `DOCUMENT_STORAGE_PATH_PREFIX` so documents, signed packages, previews, and generated artifacts can share one bucket without path collisions.
 - The filesystem is treated as ephemeral for deployment; persistent documents belong in object storage.
 - A document is uploaded once. Reviewers, signers, agents, and back-office users interact with the same canonical document record.
 - Versioning must preserve prior uploaded/generated files and associated audit events.
