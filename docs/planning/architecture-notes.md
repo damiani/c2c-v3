@@ -21,11 +21,27 @@
 
 ## Tenancy
 
-- Use a single MySQL database with `tenant_id` on tenant-owned records.
+- A tenant is the top-level distribution and isolation boundary. Typical tenants are large organizations, such as regional MLS or association partners, that make the app available to their members under a special arrangement; the default `C2C` tenant contains retail and unaffiliated users.
+- A team is a brokerage or brokerage-style group inside exactly one tenant. Team admins can manage team members, see team transactions, and aggregate reporting for transaction volume, commission values, and operational activity. Individual users may or may not belong to a team.
+- Use a single MySQL database with `tenant_id` on tenant-owned aggregate roots and independently accessed tenant-owned records.
+- Deeply contained child records may inherit tenant through their parent when they are never queried, authorized, reported, audited, queued, or indexed independently.
 - Tenant-owned models must use policies, scoped queries, tenant-aware factories, and tests that prove cross-tenant isolation.
 - Background jobs must carry tenant context explicitly.
 - Admin/global operations must be intentionally marked and covered by tests.
 - Tenant-specific branding, labels, templates, workflows, integrations, sender identities, and notification preferences must never leak across tenants.
+- Team-specific settings, templates, reports, and permissions must remain scoped to the team's tenant.
+
+## Dynamic Transaction Fields
+
+- Do not model customizable transaction facts as fixed business columns. The v2 property/deal schema is kept as a reference inventory in `docs/reference/v2-property-fields`, but v3 should use dynamic field definitions, template fields, and typed transaction field values.
+- Field definitions use stable keys/IDs that do not change when labels change. AI extraction mappings, form fill mappings, calculations, date triggers, and workflow rules must reference stable field identifiers instead of display labels.
+- Field labels, units, formats, visibility, required state, and option labels resolve by precedence: user display preference, team/brokerage override, tenant override, template default, system default.
+- User-level field customization is personal display preference by default. Shared workflow behavior belongs to tenant/team templates and permissions.
+- Store canonical values separately from display rendering. Money stores amount and currency; dates store date or ISO datetime values; unit-aware quantities store canonical units and render through resolved unit preferences.
+- Transaction field values should be tenant-scoped directly because they will be searched, reported, extracted into, audited, recalculated, and used by queued reminders/triggers across transactions.
+- Transaction templates are versioned. A transaction pins to the template version used at creation so future template edits do not silently change historical transactions.
+- Conditional display, required-state rules, calculated fields, and date triggers use constrained JSON rule/expression structures, never executable code.
+- Calculated field outputs are persisted with source metadata, formula version, dependency hash, and audit events so historical math can be inspected.
 
 ## Audit
 

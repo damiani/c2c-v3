@@ -10,6 +10,14 @@
 | Frontend | Livewire + Flux UI Pro | User preference and first-party Laravel ecosystem fit. |
 | Database | MySQL | Good Laravel Cloud/Laravel default; no current spec need for Postgres-specific features. |
 | Tenancy model | Single database with `tenant_id` scoping | Fastest operational path for beta and compatible with Laravel Cloud; must be heavily tested. |
+| Tenant definition | Top-level MLS/association/default C2C isolation boundary | Tenants represent distribution, branding, SSO, integrations, and cross-organization isolation; retail/unaffiliated users belong to the default C2C tenant. |
+| Team definition | Brokerage inside exactly one tenant | Teams aggregate brokers, transactions, reporting, and team-level settings while staying inside the parent tenant boundary. |
+| Tenant ID policy | Direct `tenant_id` on aggregate roots and independently accessed tenant-owned records | Supports scoped queries, policies, jobs, reporting, audit, and leakage tests without forcing redundant columns on purely contained children. |
+| Dynamic transaction fields | Normalized field definitions, templates, scoped overrides, and typed values | Avoids recreating the rigid v2 property/deal column model while supporting tenant/team/user customization. |
+| Field identity | Stable field keys/IDs separate from labels | Labels, units, formats, and select option text can change without breaking AI mappings, forms, calculations, rules, or historical data. |
+| Field display overrides | User preference, team override, tenant override, template default, system default | Allows personal display customization without letting individual users silently change shared workflow requirements. |
+| Field value storage | Canonical typed values with display-time formatting | Money, dates, units, booleans, selects, and custom values remain machine-usable for reporting, triggers, calculations, and localization. |
+| Template versioning | Transactions pin to the template version used at creation | Historical transactions remain stable when tenant or team templates are later changed. |
 | UI direction | Light-first premium admin UI | Matches user preference for modern, clean, high-end, uncluttered product experience. |
 | Navigation | Sidebar + contextual tabs + pinned transaction rail | Supports fast transaction switching and clear global navigation. |
 | Dashboard priority | Action queue first | Helps users see what needs attention immediately. |
