@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('document_type')->index();
             $table->string('status')->default('uploaded')->index();
-            $table->string('storage_disk')->default('s3');
+            $table->string('storage_disk')->default('documents');
             $table->string('storage_path');
             $table->string('original_filename');
             $table->string('mime_type')->nullable();
