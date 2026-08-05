@@ -39,4 +39,29 @@ class DocumentFactory extends Factory
             'metadata' => [],
         ];
     }
+
+    /**
+     * Attach the document to an existing transaction.
+     */
+    public function forTransaction(Transaction $transaction): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'tenant_id' => $transaction->tenant_id,
+            'transaction_id' => $transaction->getKey(),
+            'storage_path' => app(BuildDocumentStoragePath::class)->handle(
+                $transaction->tenant_id,
+                $attributes['original_filename'] ?? fake()->slug().'.pdf',
+            ),
+        ]);
+    }
+
+    /**
+     * Indicate who uploaded the document.
+     */
+    public function uploadedBy(User $user): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'uploaded_by_user_id' => $user->getKey(),
+        ]);
+    }
 }

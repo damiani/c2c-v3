@@ -35,4 +35,37 @@ class LeaseFactory extends Factory
             'metadata' => [],
         ];
     }
+
+    /**
+     * Attach the lease to an existing transaction.
+     */
+    public function forTransaction(Transaction $transaction): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'tenant_id' => $transaction->tenant_id,
+            'transaction_id' => $transaction->getKey(),
+        ]);
+    }
+
+    /**
+     * Indicate that the lease is commercial.
+     */
+    public function commercial(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'lease_type' => Lease::TYPE_COMMERCIAL,
+            'renewal_lead_months' => 5,
+        ]);
+    }
+
+    /**
+     * Indicate that the lease is residential.
+     */
+    public function residential(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'lease_type' => Lease::TYPE_RESIDENTIAL,
+            'renewal_lead_months' => 4,
+        ]);
+    }
 }

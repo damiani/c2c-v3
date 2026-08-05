@@ -33,4 +33,15 @@ class DocumentExtractionFactory extends Factory
             'metadata' => [],
         ];
     }
+
+    /**
+     * Attach the extraction result to an existing document.
+     */
+    public function forDocument(Document $document): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'tenant_id' => $document->tenant_id,
+            'document_id' => $document->getKey(),
+        ]);
+    }
 }
