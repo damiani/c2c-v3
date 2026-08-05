@@ -58,6 +58,36 @@ class Tenant extends Model
     }
 
     /**
+     * Get the tenant's roles.
+     *
+     * @return HasMany<Role, $this>
+     */
+    public function roles(): HasMany
+    {
+        return $this->hasMany(Role::class);
+    }
+
+    /**
+     * Get the tenant's transactions.
+     *
+     * @return HasMany<Transaction, $this>
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    /**
+     * Get the tenant's documents.
+     *
+     * @return HasMany<Document, $this>
+     */
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class);
+    }
+
+    /**
      * Get the users who belong to the tenant.
      *
      * @return BelongsToMany<User, $this>

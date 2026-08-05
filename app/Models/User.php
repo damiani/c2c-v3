@@ -83,6 +83,36 @@ class User extends Authenticatable
     }
 
     /**
+     * Get transactions owned by the user.
+     *
+     * @return HasMany<Transaction, $this>
+     */
+    public function ownedTransactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'owner_user_id');
+    }
+
+    /**
+     * Get documents uploaded by the user.
+     *
+     * @return HasMany<Document, $this>
+     */
+    public function uploadedDocuments(): HasMany
+    {
+        return $this->hasMany(Document::class, 'uploaded_by_user_id');
+    }
+
+    /**
+     * Get document reviews assigned to the user.
+     *
+     * @return HasMany<DocumentReview, $this>
+     */
+    public function documentReviews(): HasMany
+    {
+        return $this->hasMany(DocumentReview::class, 'reviewer_user_id');
+    }
+
+    /**
      * Determine if the user belongs to a tenant.
      */
     public function belongsToTenant(Tenant $tenant): bool
