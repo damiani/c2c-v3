@@ -48,6 +48,16 @@ class Tenant extends Model
     }
 
     /**
+     * Get the tenant's audit events.
+     *
+     * @return HasMany<AuditEvent, $this>
+     */
+    public function auditEvents(): HasMany
+    {
+        return $this->hasMany(AuditEvent::class);
+    }
+
+    /**
      * Get the users who belong to the tenant.
      *
      * @return BelongsToMany<User, $this>
