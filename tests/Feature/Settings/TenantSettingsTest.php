@@ -108,6 +108,30 @@ test('tenant settings updates are scoped to the current tenant', function () {
         ->and($secondTenant->enabled_integrations)->toBe(['calendar-sync']);
 });
 
+test('tenant settings reject current tenant changes after the component is mounted', function () {
+    $firstTenant = Tenant::factory()->create(['display_name' => 'First Tenant']);
+    $secondTenant = Tenant::factory()->create(['display_name' => 'Second Tenant']);
+    $admin = User::factory()
+        ->asTenantAdmin($firstTenant)
+        ->asTenantAdmin($secondTenant)
+        ->create();
+
+    setCurrentTenantForSettings($firstTenant);
+
+    $component = Livewire::actingAs($admin)
+        ->test('pages::settings.tenant');
+
+    setCurrentTenantForSettings($secondTenant);
+
+    $component
+        ->set('display_name', 'Tampered Tenant')
+        ->call('updateTenantSettings')
+        ->assertForbidden();
+
+    expect($firstTenant->refresh()->display_name)->toBe('First Tenant')
+        ->and($secondTenant->refresh()->display_name)->toBe('Second Tenant');
+});
+
 test('tenant members cannot update tenant settings', function () {
     $tenant = Tenant::factory()->create(['display_name' => 'Original Tenant']);
     $member = User::factory()->withTenant($tenant)->create();

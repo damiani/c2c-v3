@@ -76,6 +76,16 @@ test('locale formatter renders date currency and area defaults', function () {
         ->and($formatter->formatArea(12.5, 'es'))->toBe('12,50 Hectareas');
 });
 
+test('locale formatter falls back to english defaults when configured fallback locale is unsupported', function () {
+    config(['app.fallback_locale' => 'fr']);
+
+    $formatter = app(LocaleFormatter::class);
+
+    expect($formatter->resolveLocale('de'))->toBe('en')
+        ->and($formatter->formatDate('2026-08-06', 'de'))->toBe('08/06/2026')
+        ->and($formatter->areaUnit('de'))->toBe('acres');
+});
+
 test('spanish translations cover shared auth and settings strings', function () {
     App::setLocale('es');
 

@@ -17,6 +17,7 @@ beforeEach(function () {
             'hidden_tenant_id' => Context::getHidden('tenant_id'),
             'tenant_slug' => Context::get('tenant_slug'),
             'locale' => App::currentLocale(),
+            'session_tenant_id' => session(config('tenancy.session_key')),
         ]);
     });
 });
@@ -65,5 +66,53 @@ test('web requests ignore a session tenant outside the user memberships', functi
         ->assertJson([
             'tenant_id' => $tenant->id,
             'tenant_slug' => $tenant->slug,
+            'session_tenant_id' => $tenant->id,
+        ]);
+});
+
+test('web requests replace non numeric tenant session tampering with the fallback membership', function () {
+    $tenant = Tenant::factory()->create();
+    $user = User::factory()->withTenant($tenant)->create();
+
+    $this->actingAs($user)
+        ->withSession([config('tenancy.session_key') => 'not-a-tenant-id'])
+        ->get('/tenant-context-probe')
+        ->assertOk()
+        ->assertJson([
+            'tenant_id' => $tenant->id,
+            'tenant_slug' => $tenant->slug,
+            'session_tenant_id' => $tenant->id,
+        ]);
+});
+
+test('web requests clear tenant session tampering when the user has no tenant memberships', function () {
+    $tenant = Tenant::factory()->create();
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->withSession([config('tenancy.session_key') => $tenant->id])
+        ->get('/tenant-context-probe')
+        ->assertOk()
+        ->assertJson([
+            'tenant_id' => null,
+            'hidden_tenant_id' => null,
+            'tenant_slug' => null,
+            'session_tenant_id' => null,
+        ])
+        ->assertSessionMissing(config('tenancy.session_key'));
+});
+
+test('guest web requests do not resolve tenant context from a stale session value', function () {
+    $tenant = Tenant::factory()->create();
+
+    $this->withSession([config('tenancy.session_key') => $tenant->id])
+        ->get('/tenant-context-probe')
+        ->assertOk()
+        ->assertJson([
+            'tenant_id' => null,
+            'hidden_tenant_id' => null,
+            'tenant_slug' => null,
+            'session_tenant_id' => $tenant->id,
+            'locale' => 'en',
         ]);
 });
