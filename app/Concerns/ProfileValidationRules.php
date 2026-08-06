@@ -18,6 +18,7 @@ trait ProfileValidationRules
         return [
             'name' => $this->nameRules(),
             'email' => $this->emailRules($userId),
+            'locale' => $this->localeRules(),
         ];
     }
 
@@ -46,6 +47,20 @@ trait ProfileValidationRules
             $userId === null
                 ? Rule::unique(User::class)
                 : Rule::unique(User::class)->ignore($userId),
+        ];
+    }
+
+    /**
+     * Get the validation rules used to validate user locale preference.
+     *
+     * @return array<int, ValidationRule|array<mixed>|string>
+     */
+    protected function localeRules(): array
+    {
+        return [
+            'required',
+            'string',
+            Rule::in(array_keys(config('localization.supported_locales'))),
         ];
     }
 }

@@ -13,12 +13,34 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property string $name
+ * @property string|null $display_name
  * @property string $slug
  * @property string $status
+ * @property string|null $logo_path
+ * @property string $primary_color
+ * @property string $accent_color
+ * @property string|null $sender_name
+ * @property string|null $sender_email
+ * @property string $default_locale
+ * @property array<int, string>|null $supported_locales
+ * @property array<int, string>|null $enabled_integrations
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'slug', 'status'])]
+#[Fillable([
+    'name',
+    'display_name',
+    'slug',
+    'status',
+    'logo_path',
+    'primary_color',
+    'accent_color',
+    'sender_name',
+    'sender_email',
+    'default_locale',
+    'supported_locales',
+    'enabled_integrations',
+])]
 class Tenant extends Model
 {
     public const string STATUS_ACTIVE = 'active';
@@ -35,7 +57,23 @@ class Tenant extends Model
      */
     protected $attributes = [
         'status' => self::STATUS_ACTIVE,
+        'primary_color' => '#2563eb',
+        'accent_color' => '#16a34a',
+        'default_locale' => 'en',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'supported_locales' => 'array',
+            'enabled_integrations' => 'array',
+        ];
+    }
 
     /**
      * Get the tenant's memberships.
@@ -88,6 +126,16 @@ class Tenant extends Model
     }
 
     /**
+     * Get identity provider accounts linked inside the tenant.
+     *
+     * @return HasMany<IdentityProviderAccount, $this>
+     */
+    public function identityProviderAccounts(): HasMany
+    {
+        return $this->hasMany(IdentityProviderAccount::class);
+    }
+
+    /**
      * Get the users who belong to the tenant.
      *
      * @return BelongsToMany<User, $this>
@@ -97,5 +145,21 @@ class Tenant extends Model
         return $this->belongsToMany(User::class, 'tenant_memberships')
             ->withPivot('role')
             ->withTimestamps();
+    }
+
+    /**
+     * Get the display name shown in tenant-branded UI and mail.
+     */
+    public function brandedName(): string
+    {
+        return $this->display_name ?? $this->name;
+    }
+
+    /**
+     * Determine if a locale is enabled for this tenant.
+     */
+    public function supportsLocale(string $locale): bool
+    {
+        return in_array($locale, $this->supported_locales ?? [$this->default_locale], true);
     }
 }

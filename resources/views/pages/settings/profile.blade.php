@@ -14,6 +14,7 @@ new #[Title('Profile settings')] class extends Component {
 
     public string $name = '';
     public string $email = '';
+    public string $locale = '';
 
     /**
      * Mount the component.
@@ -22,6 +23,7 @@ new #[Title('Profile settings')] class extends Component {
     {
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
+        $this->locale = Auth::user()->locale;
     }
 
     /**
@@ -106,6 +108,12 @@ new #[Title('Profile settings')] class extends Component {
                     </div>
                 @endif
             </div>
+
+            <flux:select wire:model="locale" :label="__('Language')" required>
+                @foreach (config('localization.supported_locales') as $locale => $name)
+                    <flux:select.option :value="$locale">{{ __($name) }}</flux:select.option>
+                @endforeach
+            </flux:select>
 
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">
