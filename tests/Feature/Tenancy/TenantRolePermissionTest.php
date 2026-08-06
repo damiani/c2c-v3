@@ -107,6 +107,38 @@ test('custom tenant role definitions can grant scoped permissions', function () 
         ->and($user->hasTenantPermission($tenant, TenantPermission::TenantManageMembers))->toBeFalse();
 });
 
+test('custom tenant role permissions do not leak to the same role slug in another tenant', function () {
+    $firstTenant = Tenant::factory()->create();
+    $secondTenant = Tenant::factory()->create();
+    $user = User::factory()->create();
+
+    Role::factory()
+        ->for($firstTenant)
+        ->create([
+            'name' => 'Regional Manager',
+            'slug' => 'regional-manager',
+            'permissions' => [
+                TenantPermission::TenantView,
+                TenantPermission::TenantManageMembers,
+            ],
+        ]);
+
+    TenantMembership::factory()
+        ->for($firstTenant)
+        ->for($user, 'user')
+        ->create(['role' => 'regional-manager']);
+
+    TenantMembership::factory()
+        ->for($secondTenant)
+        ->for($user, 'user')
+        ->create(['role' => 'regional-manager']);
+
+    expect($user->hasTenantPermission($firstTenant, TenantPermission::TenantManageMembers))->toBeTrue()
+        ->and($user->hasTenantPermission($secondTenant, TenantPermission::TenantManageMembers))->toBeFalse()
+        ->and(Gate::forUser($user)->allows('manageMembers', $firstTenant))->toBeTrue()
+        ->and(Gate::forUser($user)->denies('manageMembers', $secondTenant))->toBeTrue();
+});
+
 test('known roles keep registry fallback permissions without persisted role records', function () {
     $tenant = Tenant::factory()->create();
     $admin = User::factory()->asTenantAdmin($tenant)->create();

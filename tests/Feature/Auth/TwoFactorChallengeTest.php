@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Fortify\Features;
@@ -38,5 +39,41 @@ class TwoFactorChallengeTest extends TestCase
             'email' => $user->email,
             'password' => 'password',
         ])->assertRedirect(route('two-factor.login'));
+    }
+
+    public function test_two_factor_login_with_recovery_code_preserves_selected_tenant_session_context(): void
+    {
+        Features::twoFactorAuthentication([
+            'confirm' => true,
+            'confirmPassword' => true,
+        ]);
+
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()
+            ->withTenant($tenant)
+            ->withTwoFactor()
+            ->create();
+
+        $this->withSession([config('tenancy.session_key') => $tenant->id])
+            ->post(route('login.store'), [
+                'email' => $user->email,
+                'password' => 'password',
+                'remember' => true,
+            ])
+            ->assertRedirect(route('two-factor.login'))
+            ->assertSessionHas('login.id', $user->id)
+            ->assertSessionHas('login.remember', true)
+            ->assertSessionHas(config('tenancy.session_key'), $tenant->id);
+
+        $recoveryCode = $user->recoveryCodes()[0];
+
+        $this->post(route('two-factor.login.store'), [
+            'recovery_code' => $recoveryCode,
+        ])->assertRedirect(route('dashboard', absolute: false));
+
+        $this->assertAuthenticatedAs($user);
+        $this->assertNotContains($recoveryCode, $user->fresh()->recoveryCodes());
+        $this->assertEquals($tenant->id, session(config('tenancy.session_key')));
+        $this->assertFalse(session()->has('login.id'));
     }
 }
