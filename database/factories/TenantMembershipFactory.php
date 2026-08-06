@@ -45,4 +45,44 @@ class TenantMembershipFactory extends Factory
             'role' => TenantMembership::ROLE_ADMIN,
         ]);
     }
+
+    /**
+     * Indicate that the membership is for a broker/admin.
+     */
+    public function brokerAdmin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => TenantMembership::ROLE_BROKER_ADMIN,
+        ]);
+    }
+
+    /**
+     * Indicate that the membership is for a coordinator or assistant.
+     */
+    public function coordinator(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => TenantMembership::ROLE_COORDINATOR,
+        ]);
+    }
+
+    /**
+     * Indicate that the membership is for an agent.
+     */
+    public function agent(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => TenantMembership::ROLE_AGENT,
+        ]);
+    }
+
+    /**
+     * Indicate that the membership is for a back-office user.
+     */
+    public function backOffice(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => TenantMembership::ROLE_BACK_OFFICE,
+        ]);
+    }
 }

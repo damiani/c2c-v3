@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Authorization\TenantPermissionRegistry;
 use App\Concerns\BelongsToTenant;
 use Database\Factories\RoleFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -39,5 +41,24 @@ class Role extends Model
             'permissions' => 'array',
             'is_system' => 'boolean',
         ];
+    }
+
+    /**
+     * Scope roles to system-managed definitions.
+     *
+     * @param  Builder<static>  $query
+     * @return Builder<static>
+     */
+    public function scopeSystem(Builder $query): Builder
+    {
+        return $query->where('is_system', true);
+    }
+
+    /**
+     * Determine if this role grants a permission.
+     */
+    public function hasPermission(string $permission): bool
+    {
+        return TenantPermissionRegistry::allows($this->permissions, $permission);
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
+use App\Authorization\TenantPermission;
 use App\Models\Tenant;
-use App\Models\TenantMembership;
 use App\Models\User;
 
 class TenantPolicy
@@ -21,7 +21,7 @@ class TenantPolicy
      */
     public function view(User $user, Tenant $tenant): bool
     {
-        return $user->belongsToTenant($tenant);
+        return $user->hasTenantPermission($tenant, TenantPermission::TenantView);
     }
 
     /**
@@ -37,10 +37,7 @@ class TenantPolicy
      */
     public function update(User $user, Tenant $tenant): bool
     {
-        return $user->tenantMemberships()
-            ->whereBelongsTo($tenant)
-            ->whereIn('role', TenantMembership::administrativeRoles())
-            ->exists();
+        return $user->hasTenantPermission($tenant, TenantPermission::TenantUpdate);
     }
 
     /**
@@ -48,10 +45,47 @@ class TenantPolicy
      */
     public function delete(User $user, Tenant $tenant): bool
     {
-        return $user->tenantMemberships()
-            ->whereBelongsTo($tenant)
-            ->where('role', TenantMembership::ROLE_OWNER)
-            ->exists();
+        return $user->hasTenantPermission($tenant, TenantPermission::TenantDelete);
+    }
+
+    /**
+     * Determine whether the user can manage tenant members.
+     */
+    public function manageMembers(User $user, Tenant $tenant): bool
+    {
+        return $user->hasTenantPermission($tenant, TenantPermission::TenantManageMembers);
+    }
+
+    /**
+     * Determine whether the user can manage tenant roles.
+     */
+    public function manageRoles(User $user, Tenant $tenant): bool
+    {
+        return $user->hasTenantPermission($tenant, TenantPermission::TenantManageRoles);
+    }
+
+    /**
+     * Determine whether the user can manage tenant branding.
+     */
+    public function manageBranding(User $user, Tenant $tenant): bool
+    {
+        return $user->hasTenantPermission($tenant, TenantPermission::TenantManageBranding);
+    }
+
+    /**
+     * Determine whether the user can manage tenant integrations.
+     */
+    public function manageIntegrations(User $user, Tenant $tenant): bool
+    {
+        return $user->hasTenantPermission($tenant, TenantPermission::TenantManageIntegrations);
+    }
+
+    /**
+     * Determine whether the user can view tenant-level reports.
+     */
+    public function viewReports(User $user, Tenant $tenant): bool
+    {
+        return $user->hasTenantPermission($tenant, TenantPermission::TenantViewReports);
     }
 
     /**
