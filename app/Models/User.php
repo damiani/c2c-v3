@@ -141,4 +141,35 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
             ->whereKey($tenant->getKey())
             ->exists();
     }
+
+    /**
+     * Get the user's membership for a tenant.
+     */
+    public function membershipForTenant(Tenant $tenant): ?TenantMembership
+    {
+        return $this->tenantMemberships()
+            ->whereBelongsTo($tenant)
+            ->first();
+    }
+
+    /**
+     * Determine if the user has one of the given roles in a tenant.
+     *
+     * @param  string|list<string>  $roles
+     */
+    public function hasTenantRole(Tenant $tenant, string|array $roles): bool
+    {
+        return $this->tenantMemberships()
+            ->whereBelongsTo($tenant)
+            ->role($roles)
+            ->exists();
+    }
+
+    /**
+     * Determine if the user has a tenant-scoped permission.
+     */
+    public function hasTenantPermission(Tenant $tenant, string $permission): bool
+    {
+        return $this->membershipForTenant($tenant)?->hasPermission($permission) ?? false;
+    }
 }
