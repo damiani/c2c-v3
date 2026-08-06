@@ -5,6 +5,17 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
+        <flux:button variant="outline" :href="route('sso.redirect', ['provider' => 'google'])" class="w-full" data-test="google-login-button">
+            {{ __('Continue with Google') }}
+        </flux:button>
+
+        <div class="relative">
+            <flux:separator />
+            <span class="absolute px-2 text-xs -translate-x-1/2 -translate-y-1/2 bg-white start-1/2 top-1/2 text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400">
+                {{ __('or') }}
+            </span>
+        </div>
+
         <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
             @csrf
 

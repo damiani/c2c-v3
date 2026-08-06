@@ -1,12 +1,16 @@
 <?php
 
 use App\Concerns\PasswordValidationRules;
+use App\Models\IdentityProviderAccount;
+use App\Tenancy\CurrentTenant;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\Attributes\On;
@@ -83,6 +87,43 @@ new #[Title('Security settings')] class extends Component {
         $disableTwoFactorAuthentication(auth()->user());
 
         $this->twoFactorEnabled = false;
+    }
+
+    public function unlinkIdentityProviderAccount(int $accountId): void
+    {
+        $tenant = app(CurrentTenant::class)->get();
+
+        abort_if($tenant === null, 404);
+
+        $account = IdentityProviderAccount::query()
+            ->whereBelongsTo($tenant)
+            ->whereBelongsTo(Auth::user(), 'user')
+            ->findOrFail($accountId);
+
+        $account->delete();
+
+        unset($this->identityProviderAccounts);
+
+        Flux::toast(variant: 'success', text: __('Connected account removed.'));
+    }
+
+    /**
+     * @return Collection<int, IdentityProviderAccount>
+     */
+    #[Computed]
+    public function identityProviderAccounts(): Collection
+    {
+        $tenant = app(CurrentTenant::class)->get();
+
+        if ($tenant === null) {
+            return new Collection();
+        }
+
+        return Auth::user()
+            ->identityProviderAccounts()
+            ->whereBelongsTo($tenant)
+            ->orderBy('provider')
+            ->get();
     }
 }; ?>
 
@@ -171,5 +212,33 @@ new #[Title('Security settings')] class extends Component {
                 </div>
             </section>
         @endif
+
+        <section class="mt-12 space-y-4">
+            <div>
+                <flux:heading>{{ __('Connected accounts') }}</flux:heading>
+                <flux:subheading>{{ __('Manage external sign-in providers for this tenant') }}</flux:subheading>
+            </div>
+
+            <div class="space-y-3">
+                @forelse ($this->identityProviderAccounts as $account)
+                    <div class="flex items-center justify-between gap-3 rounded-lg border border-zinc-200 p-3 dark:border-white/10" wire:key="identity-provider-account-{{ $account->id }}">
+                        <div class="min-w-0">
+                            <flux:text class="font-medium">{{ __(config("sso.providers.{$account->provider}.label", $account->provider)) }}</flux:text>
+                            <flux:text variant="subtle" class="truncate">{{ $account->email ?? $account->provider_user_id }}</flux:text>
+                        </div>
+
+                        <flux:button variant="danger" size="sm" wire:click="unlinkIdentityProviderAccount({{ $account->id }})">
+                            {{ __('Disconnect') }}
+                        </flux:button>
+                    </div>
+                @empty
+                    <flux:text variant="subtle">{{ __('No external accounts are connected for this tenant.') }}</flux:text>
+                @endforelse
+            </div>
+
+            <flux:button variant="outline" :href="route('sso.redirect', ['provider' => 'google'])">
+                {{ __('Connect Google') }}
+            </flux:button>
+        </section>
     </x-pages::settings.layout>
 </section>
