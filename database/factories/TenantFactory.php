@@ -24,8 +24,17 @@ class TenantFactory extends Factory
 
         return [
             'name' => $name,
+            'display_name' => null,
             'slug' => Str::slug($name),
             'status' => Tenant::STATUS_ACTIVE,
+            'logo_path' => null,
+            'primary_color' => '#2563eb',
+            'accent_color' => '#16a34a',
+            'sender_name' => null,
+            'sender_email' => null,
+            'default_locale' => 'en',
+            'supported_locales' => ['en', 'es'],
+            'enabled_integrations' => [],
         ];
     }
 
@@ -36,8 +45,10 @@ class TenantFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'name' => 'C2C',
+            'display_name' => 'Contract2Close',
             'slug' => 'c2c',
             'status' => Tenant::STATUS_ACTIVE,
+            'supported_locales' => ['en', 'es'],
         ]);
     }
 
@@ -51,10 +62,27 @@ class TenantFactory extends Factory
 
             return [
                 'name' => $tenantName,
+                'display_name' => $tenantName,
                 'slug' => Str::slug($tenantName),
                 'status' => Tenant::STATUS_ACTIVE,
             ];
         });
+    }
+
+    /**
+     * Indicate that the tenant has custom branding settings.
+     */
+    public function branded(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'display_name' => 'Chicago REALTORS',
+            'logo_path' => 'tenant-logos/chicago-realtors.svg',
+            'primary_color' => '#0f766e',
+            'accent_color' => '#f59e0b',
+            'sender_name' => 'Chicago REALTORS Contract2Close',
+            'sender_email' => 'transactions@example.test',
+            'enabled_integrations' => ['mls-feed', 'forms-library'],
+        ]);
     }
 
     /**

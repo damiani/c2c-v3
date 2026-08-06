@@ -27,6 +27,7 @@ class ProfileUpdateTest extends TestCase
         $response = Livewire::test('pages::settings.profile')
             ->set('name', 'Test User')
             ->set('email', 'test@example.com')
+            ->set('locale', 'es')
             ->call('updateProfileInformation');
 
         $response->assertHasNoErrors();
@@ -35,6 +36,7 @@ class ProfileUpdateTest extends TestCase
 
         $this->assertEquals('Test User', $user->name);
         $this->assertEquals('test@example.com', $user->email);
+        $this->assertEquals('es', $user->locale);
         $this->assertNull($user->email_verified_at);
     }
 
