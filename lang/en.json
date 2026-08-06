@@ -1,4 +1,24 @@
 {
+    "Accent color": "Accent color",
+    "Calendar Sync": "Calendar Sync",
+    "Default language": "Default language",
+    "Display name": "Display name",
     "English": "English",
-    "Spanish": "Spanish"
+    "Forms Library": "Forms Library",
+    "Google Drive": "Google Drive",
+    "Logo path": "Logo path",
+    "Manage tenant branding, locales, and integrations": "Manage tenant branding, locales, and integrations",
+    "Microsoft 365": "Microsoft 365",
+    "MLS Feed": "MLS Feed",
+    "Primary color": "Primary color",
+    "Sender email": "Sender email",
+    "Sender name": "Sender name",
+    "Spanish": "Spanish",
+    "Supported languages": "Supported languages",
+    "Tenant": "Tenant",
+    "Tenant settings": "Tenant settings",
+    "Tenant settings updated.": "Tenant settings updated.",
+    "The default language must be enabled for this tenant.": "The default language must be enabled for this tenant.",
+    "Visible integrations": "Visible integrations",
+    "WhatsApp / META Distribution": "WhatsApp / META Distribution"
 }
