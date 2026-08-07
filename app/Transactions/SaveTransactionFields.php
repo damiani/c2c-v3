@@ -69,11 +69,30 @@ class SaveTransactionFields
 
     private function normalizedValue(mixed $value, string $dataType): mixed
     {
+        if (in_array($dataType, [
+            TransactionFieldDefinition::TYPE_MONEY,
+            TransactionFieldDefinition::TYPE_DECIMAL,
+            TransactionFieldDefinition::TYPE_PERCENTAGE,
+            TransactionFieldDefinition::TYPE_QUANTITY,
+            TransactionFieldDefinition::TYPE_INTEGER,
+        ], true)) {
+            return $this->normalizedNumericValue($value);
+        }
+
         if ($dataType === TransactionFieldDefinition::TYPE_JSON && is_string($value)) {
             return json_decode($value, true) ?? ['value' => $value];
         }
 
         return $value;
+    }
+
+    private function normalizedNumericValue(mixed $value): mixed
+    {
+        if (! is_string($value)) {
+            return $value;
+        }
+
+        return str_replace(',', '', trim($value));
     }
 
     /**

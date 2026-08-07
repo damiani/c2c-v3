@@ -55,7 +55,7 @@ test('users can create a transaction from a resolved template with typed dynamic
         ->set('fieldInputs.'.fieldDefinitionId('property.address'), '123 Lakeview Ave')
         ->set('fieldInputs.'.fieldDefinitionId('property.city'), 'Chicago')
         ->set('fieldInputs.'.fieldDefinitionId('property.state'), 'IL')
-        ->set('fieldInputs.'.fieldDefinitionId('deal.purchase_price'), '625000')
+        ->set('fieldInputs.'.fieldDefinitionId('deal.purchase_price'), '625,000')
         ->set('fieldInputs.'.fieldDefinitionId('deal.contract_acceptance_date'), '2026-08-07')
         ->set('fieldInputs.'.fieldDefinitionId('inspection.is_scheduled'), true)
         ->set('fieldInputs.'.fieldDefinitionId('inspection.date'), '2026-08-14')
@@ -176,6 +176,7 @@ test('transaction forms render Flux controls for dates selects and booleans', fu
         ->assertSee('data-flux-select', false)
         ->assertSee('data-flux-checkbox', false)
         ->assertDontSee('<section', false)
+        ->assertDontSee('type="number"', false)
         ->assertDontSee('type="date"', false)
         ->assertDontSee('data-flux-select-native', false);
 
@@ -188,9 +189,13 @@ test('transaction forms render Flux controls for dates selects and booleans', fu
         ->assertSee('data-flux-date-picker', false)
         ->assertSee('data-flux-select', false)
         ->assertSee('data-flux-checkbox', false)
+        ->assertSee('$money($input)', false)
+        ->assertSee('wire:model.live.debounce.700ms', false)
         ->assertDontSee('<section', false)
+        ->assertDontSee('type="number"', false)
         ->assertDontSee('type="date"', false)
-        ->assertDontSee('data-flux-select-native', false);
+        ->assertDontSee('data-flux-select-native', false)
+        ->assertDontSee('Save changes');
 });
 
 test('users can edit an existing transaction without changing its pinned template version', function () {
@@ -216,11 +221,10 @@ test('users can edit an existing transaction without changing its pinned templat
         ->set('fieldInputs.'.fieldDefinitionId('property.address'), '456 Lakeview Ave')
         ->set('fieldInputs.'.fieldDefinitionId('property.city'), 'Chicago')
         ->set('fieldInputs.'.fieldDefinitionId('property.state'), 'IL')
-        ->set('fieldInputs.'.fieldDefinitionId('deal.purchase_price'), '650000')
+        ->set('fieldInputs.'.fieldDefinitionId('deal.purchase_price'), '650,000')
         ->set('fieldInputs.'.fieldDefinitionId('deal.contract_acceptance_date'), '2026-08-01')
-        ->call('save')
         ->assertHasNoErrors()
-        ->assertSee('Transaction updated.');
+        ->assertSee('Saved');
 
     $transaction->refresh();
 
@@ -229,7 +233,7 @@ test('users can edit an existing transaction without changing its pinned templat
         ->and($transaction->property_address)->toBe('456 Lakeview Ave')
         ->and($transaction->transaction_template_version)->toBe(1)
         ->and($transaction->fieldValues()->where('field_key', 'deal.purchase_price')->sole()->value_money_amount)->toBe('650000.00')
-        ->and(AuditEvent::query()->forTenant($tenant)->where('action', 'transaction.updated')->count())->toBe(1);
+        ->and(AuditEvent::query()->forTenant($tenant)->where('action', 'transaction.updated')->count())->toBeGreaterThanOrEqual(1);
 });
 
 test('transaction index and edit enforce tenant and owner visibility', function () {

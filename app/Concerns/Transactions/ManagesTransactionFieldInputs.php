@@ -10,6 +10,7 @@ use App\Models\TransactionFieldValue;
 use App\Models\TransactionTemplate;
 use App\Tenancy\CurrentTenant;
 use App\TransactionFields\TransactionFieldResolver;
+use Closure;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -166,8 +167,8 @@ trait ManagesTransactionFieldInputs
             TransactionFieldDefinition::TYPE_MONEY,
             TransactionFieldDefinition::TYPE_DECIMAL,
             TransactionFieldDefinition::TYPE_PERCENTAGE,
-            TransactionFieldDefinition::TYPE_QUANTITY => ['numeric'],
-            TransactionFieldDefinition::TYPE_INTEGER => ['integer'],
+            TransactionFieldDefinition::TYPE_QUANTITY => [$this->numericInputRule()],
+            TransactionFieldDefinition::TYPE_INTEGER => [$this->integerInputRule()],
             TransactionFieldDefinition::TYPE_DATE,
             TransactionFieldDefinition::TYPE_DATETIME => ['date'],
             TransactionFieldDefinition::TYPE_BOOLEAN => ['boolean'],
@@ -175,6 +176,41 @@ trait ManagesTransactionFieldInputs
             TransactionFieldDefinition::TYPE_JSON => ['json'],
             default => ['string', 'max:500'],
         };
+    }
+
+    protected function numericInputRule(): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail): void {
+            if ($value === null || $value === '') {
+                return;
+            }
+
+            if (! is_numeric($this->normalizedNumericInput($value))) {
+                $fail(__('The :attribute must be a number.'));
+            }
+        };
+    }
+
+    protected function integerInputRule(): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail): void {
+            if ($value === null || $value === '') {
+                return;
+            }
+
+            if (filter_var($this->normalizedNumericInput($value), FILTER_VALIDATE_INT) === false) {
+                $fail(__('The :attribute must be an integer.'));
+            }
+        };
+    }
+
+    protected function normalizedNumericInput(mixed $value): mixed
+    {
+        if (! is_string($value)) {
+            return $value;
+        }
+
+        return str_replace(',', '', trim($value));
     }
 
     /**

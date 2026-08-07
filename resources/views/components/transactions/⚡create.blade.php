@@ -232,7 +232,7 @@ new class extends Component {
                                 <flux:label>{{ $field['label'] }}</flux:label>
                                 <flux:input.group>
                                     <flux:input.group.prefix>{{ $field['value_schema']['currency'] ?? 'USD' }}</flux:input.group.prefix>
-                                    <flux:input type="number" step="0.01" min="0" wire:model="{{ $model }}" />
+                                    <flux:input inputmode="decimal" mask:dynamic="$money($input)" wire:model="{{ $model }}" />
                                 </flux:input.group>
                                 <flux:error name="{{ $model }}" />
                             </flux:field>
@@ -244,7 +244,7 @@ new class extends Component {
                             <flux:field>
                                 <flux:label>{{ $field['label'] }}</flux:label>
                                 <flux:input.group>
-                                    <flux:input type="number" step="0.01" wire:model="{{ $model }}" />
+                                    <flux:input inputmode="decimal" mask:dynamic="$money($input)" wire:model="{{ $model }}" />
                                     @if ($field['unit'])
                                         <flux:input.group.suffix>{{ Str::headline($field['unit']) }}</flux:input.group.suffix>
                                     @endif
@@ -256,7 +256,7 @@ new class extends Component {
                         @case(\App\Models\TransactionFieldDefinition::TYPE_INTEGER)
                             <flux:field>
                                 <flux:label>{{ $field['label'] }}</flux:label>
-                                <flux:input type="number" step="1" wire:model="{{ $model }}" />
+                                <flux:input inputmode="numeric" mask:dynamic="$money($input)" wire:model="{{ $model }}" />
                                 <flux:error name="{{ $model }}" />
                             </flux:field>
                             @break
