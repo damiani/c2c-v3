@@ -139,7 +139,7 @@ new class extends Component {
 ?>
 
 <form wire:submit="save" class="space-y-6" data-test="transaction-create-form">
-    <section class="rounded-lg border border-zinc-200 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+    <flux:card class="space-y-5 rounded-lg border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
         <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div class="space-y-2">
                 <flux:heading size="xl" level="1">{{ __('New transaction') }}</flux:heading>
@@ -157,22 +157,34 @@ new class extends Component {
                 </flux:button>
             </div>
         </div>
-    </section>
+    </flux:card>
 
     <flux:card class="space-y-5 rounded-lg border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
         <div class="grid gap-4 md:grid-cols-3">
-            <flux:select wire:model.live="templateId" variant="listbox" :label="__('Template')">
-                @foreach ($this->templates as $template)
-                    <flux:select.option value="{{ $template->id }}">{{ $template->name }}</flux:select.option>
-                @endforeach
-            </flux:select>
+            <flux:field>
+                <flux:label>{{ __('Template') }}</flux:label>
+                <flux:select wire:model.live="templateId" variant="listbox">
+                    @foreach ($this->templates as $template)
+                        <flux:select.option value="{{ $template->id }}">{{ $template->name }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+                <flux:error name="templateId" />
+            </flux:field>
 
-            <flux:input wire:model="name" :label="__('Transaction name')" :placeholder="__('123 Main St sale')" />
+            <flux:field>
+                <flux:label>{{ __('Transaction name') }}</flux:label>
+                <flux:input wire:model="name" :placeholder="__('123 Main St sale')" />
+                <flux:error name="name" />
+            </flux:field>
 
-            <flux:select wire:model="status" variant="listbox" :label="__('Starting status')">
-                <flux:select.option value="{{ \App\Models\Transaction::STATUS_DRAFT }}">{{ __('Draft') }}</flux:select.option>
-                <flux:select.option value="{{ \App\Models\Transaction::STATUS_ACTIVE }}">{{ __('Active') }}</flux:select.option>
-            </flux:select>
+            <flux:field>
+                <flux:label>{{ __('Starting status') }}</flux:label>
+                <flux:select wire:model="status" variant="listbox">
+                    <flux:select.option value="{{ \App\Models\Transaction::STATUS_DRAFT }}">{{ __('Draft') }}</flux:select.option>
+                    <flux:select.option value="{{ \App\Models\Transaction::STATUS_ACTIVE }}">{{ __('Active') }}</flux:select.option>
+                </flux:select>
+                <flux:error name="status" />
+            </flux:field>
         </div>
     </flux:card>
 
@@ -192,15 +204,27 @@ new class extends Component {
 
                     @switch($field['data_type'])
                         @case(\App\Models\TransactionFieldDefinition::TYPE_BOOLEAN)
-                            <flux:checkbox wire:model="{{ $model }}" label="{{ $field['label'] }}" />
+                            <flux:field variant="inline">
+                                <flux:checkbox wire:model="{{ $model }}" />
+                                <flux:label>{{ $field['label'] }}</flux:label>
+                                <flux:error name="{{ $model }}" />
+                            </flux:field>
                             @break
 
                         @case(\App\Models\TransactionFieldDefinition::TYPE_DATE)
-                            <flux:date-picker type="input" wire:model="{{ $model }}" label="{{ $field['label'] }}" clearable />
+                            <flux:field>
+                                <flux:label>{{ $field['label'] }}</flux:label>
+                                <flux:date-picker type="input" wire:model="{{ $model }}" clearable />
+                                <flux:error name="{{ $model }}" />
+                            </flux:field>
                             @break
 
                         @case(\App\Models\TransactionFieldDefinition::TYPE_DATETIME)
-                            <flux:input type="datetime-local" wire:model="{{ $model }}" label="{{ $field['label'] }}" />
+                            <flux:field>
+                                <flux:label>{{ $field['label'] }}</flux:label>
+                                <flux:input type="datetime-local" wire:model="{{ $model }}" />
+                                <flux:error name="{{ $model }}" />
+                            </flux:field>
                             @break
 
                         @case(\App\Models\TransactionFieldDefinition::TYPE_MONEY)
@@ -230,23 +254,39 @@ new class extends Component {
                             @break
 
                         @case(\App\Models\TransactionFieldDefinition::TYPE_INTEGER)
-                            <flux:input type="number" step="1" wire:model="{{ $model }}" label="{{ $field['label'] }}" />
+                            <flux:field>
+                                <flux:label>{{ $field['label'] }}</flux:label>
+                                <flux:input type="number" step="1" wire:model="{{ $model }}" />
+                                <flux:error name="{{ $model }}" />
+                            </flux:field>
                             @break
 
                         @case(\App\Models\TransactionFieldDefinition::TYPE_SELECT)
-                            <flux:select wire:model="{{ $model }}" variant="listbox" placeholder="{{ __('Select an option') }}" label="{{ $field['label'] }}" clearable>
-                                @foreach ($this->optionsFor($field) as $optionKey => $optionLabel)
-                                    <flux:select.option value="{{ $optionKey }}">{{ $optionLabel }}</flux:select.option>
-                                @endforeach
-                            </flux:select>
+                            <flux:field>
+                                <flux:label>{{ $field['label'] }}</flux:label>
+                                <flux:select wire:model="{{ $model }}" variant="listbox" placeholder="{{ __('Select an option') }}" clearable>
+                                    @foreach ($this->optionsFor($field) as $optionKey => $optionLabel)
+                                        <flux:select.option value="{{ $optionKey }}">{{ $optionLabel }}</flux:select.option>
+                                    @endforeach
+                                </flux:select>
+                                <flux:error name="{{ $model }}" />
+                            </flux:field>
                             @break
 
                         @case(\App\Models\TransactionFieldDefinition::TYPE_LONG_TEXT)
-                            <flux:textarea wire:model="{{ $model }}" label="{{ $field['label'] }}" rows="4" />
+                            <flux:field>
+                                <flux:label>{{ $field['label'] }}</flux:label>
+                                <flux:textarea wire:model="{{ $model }}" rows="4" />
+                                <flux:error name="{{ $model }}" />
+                            </flux:field>
                             @break
 
                         @default
-                            <flux:input wire:model="{{ $model }}" label="{{ $field['label'] }}" />
+                            <flux:field>
+                                <flux:label>{{ $field['label'] }}</flux:label>
+                                <flux:input wire:model="{{ $model }}" />
+                                <flux:error name="{{ $model }}" />
+                            </flux:field>
                     @endswitch
                 @endforeach
             </div>

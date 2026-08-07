@@ -99,7 +99,7 @@ new class extends Component {
 ?>
 
 <div class="space-y-6" data-test="transactions-index">
-    <section class="rounded-lg border border-zinc-200 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+    <flux:card class="rounded-lg border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
         <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div class="space-y-2">
                 <flux:heading size="xl" level="1">{{ __('Transactions') }}</flux:heading>
@@ -112,7 +112,7 @@ new class extends Component {
                 {{ __('New transaction') }}
             </flux:button>
         </div>
-    </section>
+    </flux:card>
 
     <flux:card class="rounded-lg border-zinc-200 bg-white p-0 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
         <div class="flex flex-col gap-3 border-b border-zinc-200 px-5 py-4 md:flex-row md:items-center md:justify-between dark:border-zinc-800">

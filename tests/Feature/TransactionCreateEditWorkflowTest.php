@@ -168,17 +168,29 @@ test('transaction forms render Flux controls for dates selects and booleans', fu
 
     Livewire::actingAs($user)
         ->test('transactions.create')
+        ->assertSee('data-flux-card', false)
+        ->assertSee('data-flux-field', false)
+        ->assertSee('data-flux-input', false)
+        ->assertSee('data-flux-input-group', false)
         ->assertSee('data-flux-date-picker', false)
         ->assertSee('data-flux-select', false)
         ->assertSee('data-flux-checkbox', false)
-        ->assertDontSee('type="date"', false);
+        ->assertDontSee('<section', false)
+        ->assertDontSee('type="date"', false)
+        ->assertDontSee('data-flux-select-native', false);
 
     Livewire::actingAs($user)
         ->test('transactions.edit', ['transaction' => $transaction])
+        ->assertSee('data-flux-card', false)
+        ->assertSee('data-flux-field', false)
+        ->assertSee('data-flux-input', false)
+        ->assertSee('data-flux-input-group', false)
         ->assertSee('data-flux-date-picker', false)
         ->assertSee('data-flux-select', false)
         ->assertSee('data-flux-checkbox', false)
-        ->assertDontSee('type="date"', false);
+        ->assertDontSee('<section', false)
+        ->assertDontSee('type="date"', false)
+        ->assertDontSee('data-flux-select-native', false);
 });
 
 test('users can edit an existing transaction without changing its pinned template version', function () {
