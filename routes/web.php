@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -13,10 +14,11 @@ Route::get('auth/{provider}/callback', [SocialiteController::class, 'callback'])
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
-    Route::view('transactions', 'pages.placeholder', [
-        'title' => 'Transactions',
-        'description' => 'Transaction workspaces, lifecycle status, and active deal files will land here in Phase 6.',
-    ])->name('transactions.index');
+    Route::view('transactions', 'pages.transactions.index')->name('transactions.index');
+    Route::view('transactions/create', 'pages.transactions.create')->name('transactions.create');
+    Route::get('transactions/{transaction}/edit', fn (Transaction $transaction) => view('pages.transactions.edit', [
+        'transaction' => $transaction,
+    ]))->name('transactions.edit');
     Route::view('documents', 'pages.placeholder', [
         'title' => 'Documents',
         'description' => 'Single-upload document review, approval status, and signing workflows will land here in Phases 4 and 7.',

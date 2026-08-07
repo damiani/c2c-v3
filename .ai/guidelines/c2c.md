@@ -47,6 +47,7 @@
 ## UI And UX
 
 - Use Flux UI Pro as the baseline component system.
+- Prefer Flux UI Pro components over hand-rolled controls whenever Flux provides the needed primitive, including inputs, selects, checkboxes, date pickers, tabs, modals, cards, tables, badges, buttons, and callouts.
 - Keep the app light-first, polished, uncluttered, and balanced in information density.
 - Authenticated app navigation uses a sidebar, contextual record tabs, and a collapsible pinned transaction rail.
 - Primary dashboard content is an action queue, not generic reporting cards.

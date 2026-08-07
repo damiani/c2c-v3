@@ -155,6 +155,8 @@ test('default C2C tenant includes system role definitions', function () {
         ->and($tenant->roles()->where('slug', TenantMembership::ROLE_MEMBER)->first()?->permissions)->toBe([
             TenantPermission::TenantView,
             TenantPermission::TransactionsViewOwn,
+            TenantPermission::TransactionsCreate,
+            TenantPermission::TransactionsUpdateOwn,
             TenantPermission::DocumentsUpload,
         ]);
 });

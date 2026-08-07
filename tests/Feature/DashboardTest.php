@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\Document;
 use App\Models\Tenant;
 use App\Models\TenantMembership;
-use App\Models\Transaction;
 use App\Models\User;
 use App\Tenancy\CurrentTenant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -64,7 +63,8 @@ class DashboardTest extends TestCase
             ->assertSee('Forms Library')
             ->assertSeeLivewire('dashboard.overview')
             ->assertSeeLivewire('app.global-search')
-            ->assertSeeLivewire('app.pinned-transaction-rail');
+            ->assertDontSee('data-test="pinned-transaction-rail"', false)
+            ->assertDontSee('Pinned transactions');
     }
 
     public function test_primary_navigation_targets_render_authenticated_placeholders(): void
@@ -74,7 +74,6 @@ class DashboardTest extends TestCase
         $this->actingAs($user);
 
         $routeNames = [
-            'transactions.index',
             'documents.index',
             'forms.index',
             'contacts.index',
@@ -165,31 +164,15 @@ class DashboardTest extends TestCase
             ->assertDontSee('Lakeview outside transaction');
     }
 
-    public function test_pinned_transaction_rail_filters_transactions_by_status(): void
+    public function test_app_shell_does_not_render_pinned_transaction_rail(): void
     {
         $scenario = TenantScenario::create();
 
-        $scenario->transaction->update([
-            'name' => 'Active Lakeview sale',
-            'status' => Transaction::STATUS_ACTIVE,
-        ]);
+        $this->actingAs($scenario->owner);
 
-        Transaction::factory()
-            ->forTenant($scenario->tenant)
-            ->ownedBy($scenario->owner)
-            ->create([
-                'name' => 'Draft Oak Park lease',
-                'status' => Transaction::STATUS_DRAFT,
-            ]);
-
-        app(CurrentTenant::class)->set($scenario->tenant);
-
-        Livewire::actingAs($scenario->owner)
-            ->test('app.pinned-transaction-rail')
-            ->assertSee('Active Lakeview sale')
-            ->assertDontSee('Draft Oak Park lease')
-            ->call('setStatus', Transaction::STATUS_DRAFT)
-            ->assertSee('Draft Oak Park lease')
-            ->assertDontSee('Active Lakeview sale');
+        $this->get(route('dashboard'))
+            ->assertOk()
+            ->assertDontSee('data-test="pinned-transaction-rail"', false)
+            ->assertDontSee('Pinned transactions');
     }
 }

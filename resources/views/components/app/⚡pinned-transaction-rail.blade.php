@@ -2,6 +2,7 @@
 
 use App\Models\Transaction;
 use App\Tenancy\CurrentTenant;
+use Livewire\Attributes\On;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -23,6 +24,11 @@ new class extends Component {
         }
 
         $this->status = $status;
+    }
+
+    #[On('transaction-saved')]
+    public function refreshRail(): void
+    {
     }
 
     /**
@@ -132,7 +138,7 @@ new class extends Component {
             @else
                 <div class="space-y-2">
                     @foreach ($this->transactions as $transaction)
-                        <a href="{{ route('transactions.index') }}" class="block rounded-lg border border-zinc-200 p-3 transition hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:border-zinc-700 dark:hover:bg-zinc-800" wire:navigate>
+                        <a href="{{ route('transactions.edit', $transaction) }}" class="block rounded-lg border border-zinc-200 p-3 transition hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:border-zinc-700 dark:hover:bg-zinc-800" wire:navigate>
                             <div class="flex items-start justify-between gap-2">
                                 <div class="min-w-0">
                                     <div class="truncate text-sm font-medium text-zinc-900 dark:text-white">{{ $transaction->name }}</div>
