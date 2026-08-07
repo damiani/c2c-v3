@@ -195,7 +195,7 @@ new class extends Component {
 
                     @switch($field['data_type'])
                         @case(\App\Models\TransactionFieldDefinition::TYPE_BOOLEAN)
-                            <flux:field variant="inline">
+                            <flux:field variant="inline" class="self-start">
                                 <flux:checkbox wire:model="{{ $model }}" />
                                 <flux:label>{{ $field['label'] }}</flux:label>
                                 <flux:error name="{{ $model }}" />
