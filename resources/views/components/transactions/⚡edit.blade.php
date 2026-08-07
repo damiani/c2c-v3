@@ -161,7 +161,7 @@ new class extends Component {
         <div class="grid gap-4 md:grid-cols-2">
             <flux:input wire:model="name" :label="__('Transaction name')" />
 
-            <flux:select wire:model="status" :label="__('Status')">
+            <flux:select wire:model="status" variant="listbox" :label="__('Status')">
                 <flux:select.option value="{{ \App\Models\Transaction::STATUS_DRAFT }}">{{ __('Draft') }}</flux:select.option>
                 <flux:select.option value="{{ \App\Models\Transaction::STATUS_ACTIVE }}">{{ __('Active') }}</flux:select.option>
                 <flux:select.option value="{{ \App\Models\Transaction::STATUS_PENDING_CLOSE }}">{{ __('Pending close') }}</flux:select.option>
@@ -191,7 +191,7 @@ new class extends Component {
                             @break
 
                         @case(\App\Models\TransactionFieldDefinition::TYPE_DATE)
-                            <flux:input type="date" wire:model="{{ $model }}" label="{{ $field['label'] }}" />
+                            <flux:date-picker type="input" wire:model="{{ $model }}" label="{{ $field['label'] }}" clearable />
                             @break
 
                         @case(\App\Models\TransactionFieldDefinition::TYPE_DATETIME)
@@ -229,8 +229,7 @@ new class extends Component {
                             @break
 
                         @case(\App\Models\TransactionFieldDefinition::TYPE_SELECT)
-                            <flux:select wire:model="{{ $model }}" label="{{ $field['label'] }}">
-                                <flux:select.option value="">{{ __('Select an option') }}</flux:select.option>
+                            <flux:select wire:model="{{ $model }}" variant="listbox" placeholder="{{ __('Select an option') }}" label="{{ $field['label'] }}" clearable>
                                 @foreach ($this->optionsFor($field) as $optionKey => $optionLabel)
                                     <flux:select.option value="{{ $optionKey }}">{{ $optionLabel }}</flux:select.option>
                                 @endforeach

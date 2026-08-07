@@ -153,6 +153,34 @@ test('transaction forms render resolved tenant and user field display overrides'
         ->assertDontSee('Property Address');
 });
 
+test('transaction forms render Flux controls for dates selects and booleans', function () {
+    $tenant = Tenant::factory()->create();
+    $user = User::factory()->asTenantOwner($tenant)->create();
+    $template = app(SeedDefaultTransactionTemplates::class)();
+
+    $transaction = Transaction::factory()
+        ->forTenant($tenant)
+        ->ownedBy($user)
+        ->usingTemplate($template)
+        ->create(['name' => 'Flux control check']);
+
+    app(CurrentTenant::class)->set($tenant);
+
+    Livewire::actingAs($user)
+        ->test('transactions.create')
+        ->assertSee('data-flux-date-picker', false)
+        ->assertSee('data-flux-select', false)
+        ->assertSee('data-flux-checkbox', false)
+        ->assertDontSee('type="date"', false);
+
+    Livewire::actingAs($user)
+        ->test('transactions.edit', ['transaction' => $transaction])
+        ->assertSee('data-flux-date-picker', false)
+        ->assertSee('data-flux-select', false)
+        ->assertSee('data-flux-checkbox', false)
+        ->assertDontSee('type="date"', false);
+});
+
 test('users can edit an existing transaction without changing its pinned template version', function () {
     $tenant = Tenant::factory()->create();
     $user = User::factory()->asTenantOwner($tenant)->create();
