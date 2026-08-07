@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Tenant;
 use App\Models\Transaction;
+use App\Models\TransactionTemplate;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,6 +23,8 @@ class TransactionFactory extends Factory
         return [
             'tenant_id' => Tenant::factory(),
             'owner_user_id' => User::factory(),
+            'transaction_template_id' => null,
+            'transaction_template_version' => null,
             'transaction_type' => fake()->randomElement([
                 Transaction::TYPE_RESIDENTIAL_SALE,
                 Transaction::TYPE_PURCHASE,
@@ -36,6 +39,7 @@ class TransactionFactory extends Factory
                 'city' => fake()->city(),
                 'state' => fake()->stateAbbr(),
             ],
+            'field_schema_snapshot' => null,
             'metadata' => [],
             'opened_at' => now(),
             'closed_at' => null,
@@ -79,6 +83,23 @@ class TransactionFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'transaction_type' => Transaction::TYPE_RESIDENTIAL_SALE,
+        ]);
+    }
+
+    /**
+     * Pin the transaction to a template version.
+     */
+    public function usingTemplate(TransactionTemplate $template): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'tenant_id' => $template->tenant_id ?? ($attributes['tenant_id'] ?? Tenant::factory()),
+            'transaction_template_id' => $template->getKey(),
+            'transaction_template_version' => $template->version,
+            'transaction_type' => $template->transaction_type,
+            'field_schema_snapshot' => [
+                'template_key' => $template->template_key,
+                'version' => $template->version,
+            ],
         ]);
     }
 

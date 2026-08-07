@@ -116,6 +116,46 @@ class Tenant extends Model
     }
 
     /**
+     * Get tenant-owned dynamic transaction field definitions.
+     *
+     * @return HasMany<TransactionFieldDefinition, $this>
+     */
+    public function transactionFieldDefinitions(): HasMany
+    {
+        return $this->hasMany(TransactionFieldDefinition::class);
+    }
+
+    /**
+     * Get tenant-owned transaction templates.
+     *
+     * @return HasMany<TransactionTemplate, $this>
+     */
+    public function transactionTemplates(): HasMany
+    {
+        return $this->hasMany(TransactionTemplate::class);
+    }
+
+    /**
+     * Get tenant-scoped field display overrides.
+     *
+     * @return HasMany<TransactionFieldOverride, $this>
+     */
+    public function transactionFieldOverrides(): HasMany
+    {
+        return $this->hasMany(TransactionFieldOverride::class);
+    }
+
+    /**
+     * Get dynamic transaction field values for this tenant.
+     *
+     * @return HasMany<TransactionFieldValue, $this>
+     */
+    public function transactionFieldValues(): HasMany
+    {
+        return $this->hasMany(TransactionFieldValue::class);
+    }
+
+    /**
      * Get the tenant's documents.
      *
      * @return HasMany<Document, $this>

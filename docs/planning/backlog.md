@@ -34,7 +34,26 @@
 - Build tenant-branded partner tab framework visible on dashboard and relevant sections (3).
 - Run UI acceptance for desktop/mobile, keyboard navigation, loading/empty/error states, and feature-finding usability (5).
 
-## Phase 4 - Custom E-Signature Core (55)
+## Phase 4 - Core Transaction Management MVP (102)
+
+- Build dynamic transaction field and template foundation: stable field definitions, versioned transaction templates, scoped labels/units/formats, typed values, default residential sale template seed, and tenant-safe resolution rules (34).
+- Build transaction create/edit workflows: template selection, generated fields, typed custom values, validation feedback, and edit-after-create behavior (34).
+- Build transaction workspace and progress tracking: transaction list/detail surfaces, lifecycle status, milestones/checklist progress, key dates, activity feed surface, filters, and pinned-rail/detail-page continuity (34).
+
+## Phase 5 - Transaction Field Customization Administration (34)
+
+- Build tenant/team/user customization UI and services for field labels, units, display formats, required/visible state, select option labels, and custom field definitions (13).
+- Build template composition workflows for suppressing default fields, adding custom fields, and versioning bespoke residential sale and later transaction-type templates (13).
+- Add tenant/team/user override precedence, value-preservation, permissions, and regression tests (8).
+
+## Phase 6 - Transaction Rules, Calculations, And Date Triggers (34)
+
+- Build conditional display and required-state rule evaluation using constrained JSON structures and stable field identifiers (8).
+- Build calculated fields for sums, percentages, multiplication, dependency hashes, persisted outputs, and formula version metadata (8).
+- Build configurable date triggers for reminders, late status, and transaction progress dates (8).
+- Add calculation, dependency, trigger, audit, and tenant isolation tests (10).
+
+## Phase 7 - Custom E-Signature Core (55)
 
 - Build PDF ingestion and browser preview pipeline (5).
 - Import AcroForm fields and convert them into editable in-app fill/sign fields (8).
@@ -44,7 +63,7 @@
 - Auto-store final signed package in the transaction document folder and integrate status with document color system (3).
 - Add tests for routing, field placement, audit, consent, final package, reminders, and failure recovery (5).
 
-## Phase 5 - AI Document Read And Auto-Fill (34)
+## Phase 8 - AI Document Read And Auto-Fill (34)
 
 - Define extraction provider interface and run provider bakeoff using representative real estate documents (5).
 - Build document classification pipeline for purchase agreements, lease agreements, listing agreements, disclosures, and lender docs (5).
@@ -53,36 +72,17 @@
 - Log all extraction values, confidence scores, confirmations, corrections, and timestamps in audit trail (3).
 - Add extraction fixture tests and regression cases for low-confidence fields and conflicting values (8).
 
-## Phase 6 - Core Transaction Engine (34)
-
-- Implement transaction CRUD for residential sale, purchase, rental, commercial sale, commercial lease, and custom (8).
-- Implement lifecycle states and transitions by transaction type (5).
-- Implement property and lease core field presentation through the dynamic field platform, including renewal lead time and automatic alert date calculation (8).
-- Implement transaction workspace tabs, activity feed, search, filters, and audit hooks (8).
-- Add lifecycle, validation, policy, and audit tests (5).
-
-## Phase 7 - Single-Upload Document Review (34)
+## Phase 9 - Single-Upload Document Review And Forms Library (55)
 
 - Build one-upload document storage and reviewer assignment (5).
 - Build private reviewer notes, annotations, and approval statuses per reviewer (8).
 - Build document status panel with reviewer color, timestamp, and status summary (5).
 - Build folder/transaction/back-office/commission color rollups (5).
 - Enforce no cross-reviewer edits and commission gate hooks (5).
-- Add upload, reviewer privacy, status rollup, and audit tests (6).
-
-## Phase 8 - Templates, Fields, Rules (34)
-
-- Build versioned template builder for residential sale, purchase, rental, commercial sale, commercial lease, and custom transaction types (8).
-- Build dynamic field definitions and scoped overrides for labels, units, formats, visibility, required state, select options, and custom field types at tenant, team, and user-display levels (8).
-- Build conditional display rules, constrained calculation expressions, date-trigger offsets, milestones, checklists, duplication, versioning, and permissions (13).
-- Add tenant/team isolation, override precedence, template versioning, typed value, calculation, date-trigger, and workflow rule tests (5).
-
-## Phase 9 - Forms Library (21)
-
 - Build searchable forms library with user-uploaded and MLS-preloaded source badges (5).
 - Add frequency ranking and contextual tabs by transaction section (5).
 - Integrate pull-fill-sign inline workflow with e-signature core (8).
-- Add search, ranking, access, and fill/sign integration tests (3).
+- Add upload, reviewer privacy, status rollup, search, ranking, access, fill/sign, and audit tests (9).
 
 ## Phase 10 - Teams And Contacts (21)
 
