@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Actions\Transactions\SeedDefaultTransactionTemplates;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,6 +16,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        app(SeedDefaultTransactionTemplates::class)();
+
         // User::factory(10)->create();
 
         User::factory()->create([

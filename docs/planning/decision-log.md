@@ -36,11 +36,11 @@
 |---|---|---|---|
 | Flux Pro license setup | Phase 0/3 | User | Add credentials when installing Flux Pro package. |
 | E-sign legal review | Before production signing | User/Legal | Validate consent, attribution, retention, certificate, and tamper-evidence requirements. |
-| AI extraction provider | Before Phase 5 production hardening | User/Engineering | Compare sample real estate docs across candidate providers. |
-| AI confidence thresholds | Phase 5 design | User/Engineering | Define field-level auto-apply vs. review thresholds. |
-| Reviewer permission matrix | Before Phase 7 | User | Define reviewers by transaction type and what each can view/approve. |
+| AI extraction provider | Before Phase 8 production hardening | User/Engineering | Compare sample real estate docs across candidate providers. |
+| AI confidence thresholds | Phase 8 design | User/Engineering | Define field-level auto-apply vs. review thresholds. |
+| Reviewer permission matrix | Before Phase 9 | User | Define reviewers by transaction type and what each can view/approve. |
 | Initial partner tabs | Before Phase 2/3 tenant UI completion | User | Needed for dashboard and tenant integration visibility. |
-| Jurisdictional retention rules | Before Phase 7/12 | User/Legal | Documents and leases may differ by state and transaction type. |
+| Jurisdictional retention rules | Before Phase 9/12 | User/Legal | Documents and leases may differ by state and transaction type. |
 | MLS association SSO partners | Before Phase 17 and form preload work | User | Needed for launch associations and mapping scope. |
 | META WhatsApp tenant credentials | Before Phase 15 | User/Tenants | Each tenant needs verified META Business credentials. |
 | WhatsApp message templates | During Phase 14 | User/Engineering | Must be submitted early enough for META approval before Phase 15. |

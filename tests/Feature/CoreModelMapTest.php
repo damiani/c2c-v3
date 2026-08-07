@@ -14,6 +14,11 @@ use App\Models\Role;
 use App\Models\Tenant;
 use App\Models\TenantMembership;
 use App\Models\Transaction;
+use App\Models\TransactionFieldDefinition;
+use App\Models\TransactionFieldOverride;
+use App\Models\TransactionFieldValue;
+use App\Models\TransactionTemplate;
+use App\Models\TransactionTemplateField;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -35,6 +40,11 @@ test('phase one core model tables expose required tenant owned columns', functio
         'document_extractions' => ['tenant_id', 'document_id', 'field_name', 'confidence_score', 'agent_confirmed'],
         'lease_notifications' => ['tenant_id', 'lease_id', 'lead_time_months', 'alert_at', 'escalation_status'],
         'property_distributions' => ['tenant_id', 'transaction_id', 'listing_id', 'channel', 'recipient_groups'],
+        'transaction_field_definitions' => ['tenant_id', 'scope_type', 'scope_id', 'field_key', 'data_type'],
+        'transaction_templates' => ['tenant_id', 'scope_type', 'scope_id', 'template_key', 'transaction_type', 'version'],
+        'transaction_template_fields' => ['tenant_id', 'transaction_template_id', 'field_definition_id', 'field_key'],
+        'transaction_field_overrides' => ['tenant_id', 'field_definition_id', 'scope_type', 'scope_id'],
+        'transaction_field_values' => ['tenant_id', 'transaction_id', 'field_definition_id', 'field_key', 'data_type'],
     ];
 
     foreach ($tables as $table => $columns) {
@@ -105,6 +115,22 @@ test('core model factories preserve tenant ownership through the transaction doc
         'transaction_id' => $transaction->id,
         'listing_id' => $listing->id,
     ]);
+    $fieldDefinition = TransactionFieldDefinition::factory()->forTenant($tenant, $owner)->create();
+    $template = TransactionTemplate::factory()->forTenant($tenant, $owner)->create();
+    $templateField = TransactionTemplateField::factory()
+        ->forTemplate($template)
+        ->forDefinition($fieldDefinition)
+        ->create();
+    $fieldOverride = TransactionFieldOverride::factory()
+        ->forTenant($tenant)
+        ->forDefinition($fieldDefinition)
+        ->create();
+    $fieldValue = TransactionFieldValue::factory()
+        ->forTransaction($transaction)
+        ->forDefinition($fieldDefinition)
+        ->forTemplateField($templateField)
+        ->updatedBy($owner)
+        ->create();
 
     expect($role->tenant->is($tenant))->toBeTrue()
         ->and($transaction->tenant->is($tenant))->toBeTrue()
@@ -122,9 +148,17 @@ test('core model factories preserve tenant ownership through the transaction doc
         ->and($lease->transaction->is($transaction))->toBeTrue()
         ->and($leaseNotification->lease->is($lease))->toBeTrue()
         ->and($propertyDistribution->listing->is($listing))->toBeTrue()
-        ->and($propertyDistribution->transaction->is($transaction))->toBeTrue();
+        ->and($propertyDistribution->transaction->is($transaction))->toBeTrue()
+        ->and($fieldDefinition->tenant->is($tenant))->toBeTrue()
+        ->and($template->tenant->is($tenant))->toBeTrue()
+        ->and($templateField->template->is($template))->toBeTrue()
+        ->and($templateField->definition->is($fieldDefinition))->toBeTrue()
+        ->and($fieldOverride->definition->is($fieldDefinition))->toBeTrue()
+        ->and($fieldValue->transaction->is($transaction))->toBeTrue()
+        ->and($fieldValue->definition->is($fieldDefinition))->toBeTrue()
+        ->and($fieldValue->templateField->is($templateField))->toBeTrue();
 
-    foreach ([$contact, $milestone, $document, $review, $extraction, $listing, $lease, $leaseNotification, $propertyDistribution] as $model) {
+    foreach ([$contact, $milestone, $document, $review, $extraction, $listing, $lease, $leaseNotification, $propertyDistribution, $fieldDefinition, $template, $templateField, $fieldOverride, $fieldValue] as $model) {
         expect($model->tenant_id)->toBe($tenant->id);
     }
 });
@@ -144,6 +178,11 @@ test('core model factories can create default records', function (string $modelC
     DocumentExtraction::class,
     LeaseNotification::class,
     PropertyDistribution::class,
+    TransactionFieldDefinition::class,
+    TransactionTemplate::class,
+    TransactionTemplateField::class,
+    TransactionFieldOverride::class,
+    TransactionFieldValue::class,
 ]);
 
 test('tenant owned core models can be isolated with the shared tenant scope', function (string $modelClass) {
@@ -167,6 +206,11 @@ test('tenant owned core models can be isolated with the shared tenant scope', fu
     DocumentExtraction::class,
     LeaseNotification::class,
     PropertyDistribution::class,
+    TransactionFieldDefinition::class,
+    TransactionTemplate::class,
+    TransactionTemplateField::class,
+    TransactionFieldOverride::class,
+    TransactionFieldValue::class,
 ]);
 
 function createModelForTenant(string $modelClass, Tenant $tenant): Model
@@ -190,6 +234,12 @@ function createModelForTenant(string $modelClass, Tenant $tenant): Model
         'tenant_id' => $tenant->id,
         'transaction_id' => $transaction->id,
     ]);
+    $fieldDefinition = fn (): TransactionFieldDefinition => TransactionFieldDefinition::factory()->forTenant($tenant, $user)->create();
+    $template = fn (): TransactionTemplate => TransactionTemplate::factory()->forTenant($tenant, $user)->create();
+    $templateField = fn (): TransactionTemplateField => TransactionTemplateField::factory()
+        ->forTemplate($template())
+        ->forDefinition($fieldDefinition())
+        ->create();
 
     return match ($modelClass) {
         Role::class => Role::factory()->for($tenant)->create(),
@@ -208,5 +258,16 @@ function createModelForTenant(string $modelClass, Tenant $tenant): Model
             ->create(['tenant_id' => $tenant->id, 'lease_id' => $lease()->id]),
         PropertyDistribution::class => PropertyDistribution::factory()
             ->create(['tenant_id' => $tenant->id, 'transaction_id' => $transaction->id, 'listing_id' => $listing()->id]),
+        TransactionFieldDefinition::class => $fieldDefinition(),
+        TransactionTemplate::class => $template(),
+        TransactionTemplateField::class => $templateField(),
+        TransactionFieldOverride::class => TransactionFieldOverride::factory()
+            ->forTenant($tenant)
+            ->forDefinition($fieldDefinition())
+            ->create(),
+        TransactionFieldValue::class => TransactionFieldValue::factory()
+            ->forTransaction($transaction)
+            ->forDefinition($fieldDefinition())
+            ->create(),
     };
 }

@@ -16,11 +16,14 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $tenant_id
  * @property int|null $owner_user_id
+ * @property int|null $transaction_template_id
+ * @property int|null $transaction_template_version
  * @property string $transaction_type
  * @property string $status
  * @property string $name
  * @property string|null $property_address
  * @property array<string, mixed>|null $property_data
+ * @property array<string, mixed>|null $field_schema_snapshot
  * @property array<string, mixed>|null $metadata
  * @property Carbon|null $opened_at
  * @property Carbon|null $closed_at
@@ -30,11 +33,14 @@ use Illuminate\Support\Carbon;
 #[Fillable([
     'tenant_id',
     'owner_user_id',
+    'transaction_template_id',
+    'transaction_template_version',
     'transaction_type',
     'status',
     'name',
     'property_address',
     'property_data',
+    'field_schema_snapshot',
     'metadata',
     'opened_at',
     'closed_at',
@@ -77,6 +83,7 @@ class Transaction extends Model
     {
         return [
             'property_data' => 'array',
+            'field_schema_snapshot' => 'array',
             'metadata' => 'array',
             'opened_at' => 'immutable_datetime',
             'closed_at' => 'immutable_datetime',
@@ -91,6 +98,16 @@ class Transaction extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_user_id');
+    }
+
+    /**
+     * Get the template version pinned when this transaction was created.
+     *
+     * @return BelongsTo<TransactionTemplate, $this>
+     */
+    public function template(): BelongsTo
+    {
+        return $this->belongsTo(TransactionTemplate::class, 'transaction_template_id');
     }
 
     /**
@@ -121,6 +138,16 @@ class Transaction extends Model
     public function milestones(): HasMany
     {
         return $this->hasMany(Milestone::class);
+    }
+
+    /**
+     * Get dynamic field values entered for this transaction.
+     *
+     * @return HasMany<TransactionFieldValue, $this>
+     */
+    public function fieldValues(): HasMany
+    {
+        return $this->hasMany(TransactionFieldValue::class);
     }
 
     /**
