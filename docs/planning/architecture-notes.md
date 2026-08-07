@@ -87,6 +87,7 @@
 ## UI System
 
 - Flux UI Pro is the baseline.
+- Core C2C brand color is RGB(37 99 235), `#2563eb`; tenant branding may override tenant-facing surfaces where configured.
 - App shell uses persistent sidebar, top action/search area, notification badge, and tenant/user controls.
 - Transaction rail is collapsible and shows active/recent transactions, statuses, and quick filters.
 - Transaction workspace uses a summary header and contextual tabs.

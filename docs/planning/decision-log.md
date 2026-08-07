@@ -19,6 +19,7 @@
 | Field value storage | Canonical typed values with display-time formatting | Money, dates, units, booleans, selects, and custom values remain machine-usable for reporting, triggers, calculations, and localization. |
 | Template versioning | Transactions pin to the template version used at creation | Historical transactions remain stable when tenant or team templates are later changed. |
 | UI direction | Light-first premium admin UI | Matches user preference for modern, clean, high-end, uncluttered product experience. |
+| Core brand color | RGB(37 99 235), `#2563eb` | Establishes the default C2C blue used before tenant-specific branding overrides apply. |
 | Navigation | Sidebar + contextual tabs + pinned transaction rail | Supports fast transaction switching and clear global navigation. |
 | Dashboard priority | Action queue first | Helps users see what needs attention immediately. |
 | E-signature | Custom first-party core | User wants seamless customizability and no provider lock-in. |
@@ -34,7 +35,6 @@
 | Gate | Needed By | Owner | Notes |
 |---|---|---|---|
 | Flux Pro license setup | Phase 0/3 | User | Add credentials when installing Flux Pro package. |
-| Initial dashboard wireframes | Before Phase 3 build | User/Design | Engineering should not invent final dashboard UX without approval. |
 | E-sign legal review | Before production signing | User/Legal | Validate consent, attribution, retention, certificate, and tamper-evidence requirements. |
 | AI extraction provider | Before Phase 5 production hardening | User/Engineering | Compare sample real estate docs across candidate providers. |
 | AI confidence thresholds | Phase 5 design | User/Engineering | Define field-level auto-apply vs. review thresholds. |

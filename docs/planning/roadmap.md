@@ -19,6 +19,7 @@ Relative effort uses story points: `1` tiny, `3` small, `5` medium, `8` large, `
 ## UX Direction
 
 - Light-first, polished, modern interface inspired by premium financial/admin tools and Laravel Cloud/Forge.
+- Core C2C brand color is RGB(37 99 235), `#2563eb`, with tenant branding able to override tenant-specific surfaces.
 - Balanced professional density: at-a-glance status without dashboard clutter.
 - Flux UI Pro is the baseline component system; create custom C2C primitives for transaction workspaces, PDF filling/signing, document review, status rollups, and action queues.
 - Persistent global sidebar for primary navigation.
