@@ -63,6 +63,7 @@ class TransactionFieldResolver
                     'field_definition_id' => $definition->id,
                     'field_key' => $definition->field_key,
                     'data_type' => $definition->data_type,
+                    'value_schema' => $definition->value_schema,
                     'section' => $templateField->section,
                     'label' => $templateField->label ?? $definition->label,
                     'unit' => $templateField->unit ?? $definition->default_unit,

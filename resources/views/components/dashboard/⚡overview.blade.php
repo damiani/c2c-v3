@@ -189,7 +189,7 @@ new class extends Component {
             </div>
 
             <div class="flex flex-wrap gap-2">
-                <flux:button variant="primary" icon="plus" :href="route('transactions.index')" wire:navigate>
+                <flux:button variant="primary" icon="plus" :href="route('transactions.create')" wire:navigate>
                     {{ __('New transaction') }}
                 </flux:button>
                 <flux:button variant="outline" icon="document-plus" :href="route('documents.index')" wire:navigate>

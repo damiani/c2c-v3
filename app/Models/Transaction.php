@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Authorization\TenantPermission;
 use App\Concerns\BelongsToTenant;
 use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -88,6 +90,28 @@ class Transaction extends Model
             'opened_at' => 'immutable_datetime',
             'closed_at' => 'immutable_datetime',
         ];
+    }
+
+    /**
+     * Scope transactions visible to a user inside the given tenant context.
+     *
+     * @param  Builder<static>  $query
+     * @return Builder<static>
+     */
+    public function scopeVisibleTo(Builder $query, User $user, Tenant|int $tenant): Builder
+    {
+        $tenantId = $tenant instanceof Tenant ? $tenant->getKey() : $tenant;
+
+        $query->forTenant($tenantId);
+
+        if ($tenant instanceof Tenant && (
+            $user->hasTenantPermission($tenant, TenantPermission::TransactionsViewAll)
+            || $user->hasTenantPermission($tenant, TenantPermission::TransactionsViewTeam)
+        )) {
+            return $query;
+        }
+
+        return $query->where('owner_user_id', $user->getKey());
     }
 
     /**

@@ -28,6 +28,14 @@ class TenantPermission
 
     public const string TransactionsViewAll = 'transactions.view_all';
 
+    public const string TransactionsCreate = 'transactions.create';
+
+    public const string TransactionsUpdateOwn = 'transactions.update_own';
+
+    public const string TransactionsUpdateTeam = 'transactions.update_team';
+
+    public const string TransactionsUpdateAll = 'transactions.update_all';
+
     public const string DocumentsUpload = 'documents.upload';
 
     public const string DocumentsReview = 'documents.review';
@@ -53,6 +61,10 @@ class TenantPermission
             self::TransactionsViewOwn,
             self::TransactionsViewTeam,
             self::TransactionsViewAll,
+            self::TransactionsCreate,
+            self::TransactionsUpdateOwn,
+            self::TransactionsUpdateTeam,
+            self::TransactionsUpdateAll,
             self::DocumentsUpload,
             self::DocumentsReview,
             self::ComplianceManage,

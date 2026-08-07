@@ -74,7 +74,6 @@ class DashboardTest extends TestCase
         $this->actingAs($user);
 
         $routeNames = [
-            'transactions.index',
             'documents.index',
             'forms.index',
             'contacts.index',

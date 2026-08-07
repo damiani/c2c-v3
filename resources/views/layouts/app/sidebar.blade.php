@@ -156,7 +156,7 @@
                     </flux:button>
                 </flux:tooltip>
 
-                <flux:button variant="primary" icon="plus" :href="route('transactions.index')" wire:navigate>
+                <flux:button variant="primary" icon="plus" :href="route('transactions.create')" wire:navigate>
                     {{ __('New transaction') }}
                 </flux:button>
             </div>
